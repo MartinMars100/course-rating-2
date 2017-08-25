@@ -7,6 +7,8 @@ var routes = require('./routes')
 var jsonParser = require('body-parser').json;
 var logger = require('morgan');
 
+var port = process.env.PORT;
+
 // require('database.js');
 
 app.use(logger('dev'));
