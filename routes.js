@@ -1,114 +1,97 @@
-'use strict';
+var express = require('express'),
+    router = express.Router(),
+    User = require('./models').User,
+    mid = require('./middleware/auth');
+    // Loan = require("../models").Loan,
+    // Patron = require("../models").Patron,
+    // moment = require('moment');
 
-var express = require('express');
-var router = express.Router();
-var Question = require('./models').Question;
+// GET /api/users 200 
+// Return the current authenticated user 
+// router.get('/', mid.authenticate, function(req, res, next) { 
+    // router.get('/', function(req, res, next) { 
+    //   res.json({response: "You sent me a GET request"}) ;
+//     console.log('log get user fired');
+//     res.send({
+// 		        _id: req.user._id,
+// 		        fullName: req.user.fullName
+// 	});
+	  // get user from req and send as json object 
+    // res.json({
+    //   data: [req.user]
+    // });
+// });
 
-router.param('qID', function(req,res,next,id){
-    Question.findById(id, function(err, doc){
-        if(err) return next(err);
-        if(!doc) {
-            err = new Error('Not Found');
-            err.status = 404;
-            return next(err);
-        }
-        req.question = doc;
-        return next();
-    });
-});
-
-router.param('aID', function(req,res,next,id){
-    req.answer = req.question.answers.id(id);
-    if(!req.answer) {
-       err = new Error('Not Found');
-       err.status = 404;
-       return next(err);
-    }
-    next();
-});
-
-// GET /questions
-// Route for questions collection
 router.get('/', function(req, res, next){
-    Question.find({})
-                .sort({createdAt: -1})
-                .exec(function(err, questions){
-                  if(err) return next(err);
-                  res.json(questions);   
-                });
- });
+    console.log('log get all users route');
+    User.find({})
+             .exec(function(err, users){
+               if(err) return next(err);
+               res.json(users);
+             });
 
-// POST /questions
-// Route for creating questions
-router.post('/', function(req, res, next){
-    var question = new Question(req.body);
-    question.save(function(err, question){
-        if(err) return next(err);
-        res.status(201);
-        res.json(question);
-    });
- });
+});
 
-// GET /questions/:id
-// Return for specific questions
-router.get('/:qID', function(req, res, next){
-        res.json(req.question);
- });
-
-// POST /questions/:id/answers
-// Route for creating an answer
-router.post('/:qID/answers', function(req, res,next){
-    console.log('log post to create an answer');
-    req.question.answers.push(req.body);
-    req.question.save(function(err, question){
-        if(err) return next(err);
-        res.status(201);
-        res.json(question);
-    });
- });
- 
-// PUT /questions/:qID/answers/:aID
-// Edit a specific answer
-router.put('/:qID/answers/:aID', function(req,res){
-    req.answer.update(req.body, function(err, result){
-        if(err) return next(err);
-        res.json(result);
-    });
- });
- 
-// DELETE /questions/:qID/answers/:aID
-// Delete a specific answer
-router.delete('/:qID/answers/:aID', function(req,res){
-    req.answer.remove(function(err){
-        req.question.save(function(err, question){
-            if(err) return next(err);
-            res.json(question);
+// POST /api/users 201
+// Creates a user, sets the Location header to "/", and returns no content */
+router.post('/', function(req, res, next) {
+  if (req.body.fullName &&
+      req.body.emailAddress &&
+      req.body.password &&
+      req.body.confirmPassword) {
+          
+        //   confirm that user typed same password twice
+        if (req.body.password !== req.body.confirmPassword) {
+          console.log('log passwords are not the same');
+          var err = new Error('Passwords do not match.');
+          err.status = 400;
+          return next(err);
+        }
+          
+        //   create object with form input
+        var userData = {
+          fullName: req.body.fullName,  
+          email: req.body.emailAddress,
+          password: req.body.password,
+          confirmPassword: req.body.confirmPassword
+        };
+          
+        console.log('log almost to create User');
+        console.log('log req.body.fullName = ' + req.body.fullName);
+        
+        // return res.status(201)
+        // .location('/')
+        // .end();
+        
+        // var user = new models.User(req.body);
+        var user = new User(req.body);
+        user.save(userData,function(err) {
+          if (err) return next(err)
+            res.status(201);
+            // res.location('/');
+            res.end();
         });
-    });
- });
- 
-// POST /questions/:qID/answers/:aID/vote-up
-// POST /questions/:qID/answers/:aID/vote-down
-// Vote on a specific answer
-router.post('/:qID/answers/:aID/vote-:dir', 
-    function(req, res, next) {
-      console.log('log router post vote fired');
-      if(req.params.dir.search(/^(up|down)$/) === -1) {
-          console.log('post vote up === -1');
-          var err = new Error('Not Found');
-          err.status = 404;
-          next(err);
+        
+        //   use schema's create method to insert documet into Mongo
+      //   User.save(userData, function(error) {
+      //     console.log('Inserting into MongoDb');
+			   // if (err) {
+			   //   console.log('error creating User');
+				  //   return next(err);
+		    //   } else {
+				  //     return res.status(201)
+					 //   .location('/')
+					 //   .end();	
+			   // }
+      //   });
+          
       } else {
-          console.log('post vote up not === -1');
-          req.vote = req.params.dir;
-          next();
+        console.log('log All fields are not entered');
+        err = new Error('All fields required');
+        err.status = 400;
+        return next(err);
       }
-    }, 
-    function(req, res, next){
-        req.answer.vote(req.vote, function(err, question){
-            if(err) return next(err);
-            res.json(question);
-        });
- });
+  
+});
 
 module.exports = router;
