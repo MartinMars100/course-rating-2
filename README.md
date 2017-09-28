@@ -1,5 +1,9 @@
-This app is from the Treehouse Course, Build a Rest API With Express.
-It is a question and answer app.
+Course Rating App featuring Express and Mongo
+This app is project 11 from the Treehouse
+Techdegree Program.
+The app stores users with courses they have taken
+with corresponding course ratings.
+
  
 ## To Connect to Mongo:
 To Repair after un-clean shutdown:
