@@ -49,16 +49,18 @@ db.on('error', function(err){
     console.error('connection error:', err);
 });
 
-db.once('open', function(){
-  console.log('db connection successful');
-  seeder.seed(seedData, { dropDatabase: true})
-    .then(function() {
-      console.log('Database Seeded');
-    })
-    .catch(function(err) {
-      console.error('database seed error: ', err);
-    });
-});    
+
+// Run this to seed your database then comment out
+// db.once('open', function(){
+//   console.log('db connection successful');
+//   seeder.seed(seedData, { dropDatabase: true})
+//     .then(function() {
+//       console.log('Database Seeded');
+//     })
+//     .catch(function(err) {
+//       console.error('database seed error: ', err);
+//     });
+// });    
 
 // setup our static route to serve files from the "public" folder
 app.use('/static', express.static(__dirname +'/public'));

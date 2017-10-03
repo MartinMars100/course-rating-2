@@ -12,6 +12,7 @@ function authenticate(req, res, next) {
 	if (credentials) {
 		console.log('log auth(req) check');
 		var userCred = auth(req);
+		console.log('userCred.name = ' + userCred.name);
 
 		// check email in the database
 		User.findOne({ 
