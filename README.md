@@ -6,6 +6,9 @@ with corresponding course ratings.
 
  
 ## To Connect to Mongo:
+
+Connect to the Mongod and Mongo Shell in the normal way
+
 To Repair after un-clean shutdown:
     ./mongod --repair   
 Once it is repaired run, shut down this one:
@@ -15,7 +18,12 @@ Then, run it normally:
 Then, in new terminal start your shell:
   mongo
 
+## Seeding the database
+
+Uncomment out the seed code in the index.js file
+Comment out the code once the database is seeded.
+
 ## Running the server
 
-$ node app.js
+$ npm start
 
