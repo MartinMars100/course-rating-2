@@ -4,15 +4,12 @@ console.log('log a');
 var express = require('express');
 var morgan = require('morgan');
 var jsonParser = require('body-parser').json;
-// var routes = require('../routes');
-
 var mongoose = require('mongoose');
 var session = require('express-session');
 var seeder = require('mongoose-seeder');
 var seedData = require('../data/data.json');
 var users = require('../routes/users');
 var courses = require('../routes/courses');
-var course = require('../routes/course');
 var login = require('../routes/login');
 
 var app = express();
@@ -51,16 +48,16 @@ db.on('error', function(err){
 
 
 // Run this to seed your database then comment out
-// db.once('open', function(){
-//   console.log('db connection successful');
-//   seeder.seed(seedData, { dropDatabase: true})
-//     .then(function() {
-//       console.log('Database Seeded');
-//     })
-//     .catch(function(err) {
-//       console.error('database seed error: ', err);
-//     });
-// });    
+db.once('open', function(){
+  console.log('db connection successful');
+  seeder.seed(seedData, { dropDatabase: true})
+    .then(function() {
+      console.log('Database Seeded');
+    })
+    .catch(function(err) {
+      console.error('database seed error: ', err);
+    });
+});    
 
 // setup our static route to serve files from the "public" folder
 app.use('/static', express.static(__dirname +'/public'));

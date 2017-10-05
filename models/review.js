@@ -4,26 +4,12 @@ var bcrypt = require('bcrypt');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-// User schema
-// var UserSchema = new Schema({
-// 	fullName: {
-// 		type: String,
-// 		required: [true, 'Full Name is required']
-// 	},
-// 	emailAddress: {
-// 		type: String,
-// 		unique: true
-// 	},
-// 	password: {
-// 		type: String,
-// 		required: [true, 'Password is required']
-// 	}
-// });
+console.log('log Date.now = ' + Date.now);
 
 // Review Schema
 var ReviewSchema = new Schema({
   user: {type: Schema.Types.ObjectId, ref: 'User'},
-  postedOn: Date,
+  postedOn: { type: Date, default: Date.now },
   rating: {
   	type: Number,
   	required: [true, "Rating is required."],
@@ -32,36 +18,6 @@ var ReviewSchema = new Schema({
   },
   review: String
 });
-
-// Course Schema
-// var CourseSchema = new Schema({
-// 	user: {type: Schema.Types.ObjectId, ref: 'User'},
-// 	title: {
-//       type: String,
-//       required: [true, "Title is Required"]
-// 	},
-// 	description: {
-// 	  type: String,
-// 	  required: [true, "Description is Required"]
-// 	},
-// 	estimatedTime: String,
-// 	materialsNeeded: String,
-// 	steps: [{
-// 	  stepNumber: Number,
-// 	  title: {
-// 	    type: String,
-// 	    required: [true, "Step must have a title."]
-// 	  },
-// 	  description: {
-// 	    type: String,
-// 	  	required: [true, "Step must have a description."]
-// 	  }
-// 	}],  
-// 	reviews: [{type: Schema.Types.ObjectId, ref: 'Review'}]
-
-// });	
-
-
 
 // var User = mongoose.model('User', UserSchema);
 var Review = mongoose.model('Review', ReviewSchema);

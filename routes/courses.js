@@ -66,6 +66,7 @@ router.put('/:courseId', mid.authenticate, function(req, res, next){
 
 // POST /api/courses/:courseId/reviews 201
 // POST adds new review to db if user is authenticated
+// Note the default date works for review schema using this doc variable
 router.post('/:courseId/reviews', mid.authenticate, function (req, res, next){
   Course.findOne({ _id: req.params.courseId})
     .populate('user')
@@ -81,9 +82,12 @@ router.post('/:courseId/reviews', mid.authenticate, function (req, res, next){
         err.status = 401;
         return next(err);
       } else {
-        req.body.user = course.user._id;
-        req.body.postedOn = moment().format('YYYY-MM-DD');
-        var review = new Review(req.body);
+        var doc = {
+          user: course.user._id,
+          rating: req.body.rating,
+          review: req.body.review
+        };
+        var review = new Review(doc);
         course.reviews.push(review);
         review.save(function(err){
           if (err) return next(err);
@@ -99,6 +103,19 @@ router.post('/:courseId/reviews', mid.authenticate, function (req, res, next){
       }
   });
 });
+
+// GET /api/courses/:courseId 200
+// GET a particular course using the course Id parameter
+router.get('/:courseId', function(req, res, next){
+  Course.findById(req.params.courseId)
+    .populate('reviews')
+    .populate('user', '_id fullName')
+    .exec(function(err, course) {
+      if (err) return next(err);
+      res.status(200);
+      res.json(course);
+    });
+ });
 
 // ***** Some Unsupported Routes for Later User  *****
  
@@ -169,5 +186,7 @@ router.post('/:courseId/reviews', mid.authenticate, function (req, res, next){
 //         res.json(course);
 //       });
 // });
+
+
 
 module.exports = router;

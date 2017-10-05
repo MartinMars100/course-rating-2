@@ -3,7 +3,8 @@
 var bcrypt = require('bcrypt');
 var mongoose = require('mongoose');
 
-//User schema
+// User schema
+// EmailAddress uses a mongoose custom validator
 var UserSchema = new mongoose.Schema({
 	fullName: {
 		type: String,
@@ -11,11 +12,20 @@ var UserSchema = new mongoose.Schema({
 	},
 	emailAddress: {
 		type: String,
-		unique: true
+		unique: true,
+		validate: {
+      validator: function(v) {
+        return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(v);
+      },
+      message: 'Please Enter a Valid Email Address'
+    }
 	},
 	password: {
 		type: String,
 		required: [true, 'Password is required']
+		
+		// validate: [validator.isEmail, 'Valid Email address is required.']
+		// validate: [validateEmail, "Valid Email address is required."]
 	}
 });
 

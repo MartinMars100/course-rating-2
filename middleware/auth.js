@@ -4,15 +4,11 @@ var auth = require('basic-auth');
 var bcrypt = require('bcrypt');
 
 function authenticate(req, res, next) {
-	console.log('log authenticate function in middleware');
     var credentials = auth(req);
-    console.log(credentials);
 
 	// Authenticate using basic-auth first
 	if (credentials) {
-		console.log('log auth(req) check');
 		var userCred = auth(req);
-		console.log('userCred.name = ' + userCred.name);
 
 		// check email in the database
 		User.findOne({ 
